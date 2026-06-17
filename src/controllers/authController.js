@@ -1,4 +1,4 @@
-const {registerUser} = require("../services/authService")
+const {registerUser, userlogin} = require("../services/authService")
 
 const register = async (req,res)=>{
     
@@ -11,6 +11,16 @@ const register = async (req,res)=>{
     })
 }
 
+const login = async (req,res) =>{
+    const data = await userlogin(req.body);
+
+    res.json({
+        message: "User logged in successfully",
+        data
+    })
+}
+
 module.exports = {
-    register
+    register,
+    login
 }
