@@ -1,26 +1,36 @@
-const {registerUser, userlogin} = require("../services/authService")
+const { registerUser, userlogin } = require("../services/authService");
 
-const register = async (req,res)=>{
-    
+const register = async (req, res) => {
+  try {
     const result = await registerUser(req.body);
 
-    
-    res.json({
-        result,
-        message : "register route working properly"
-    })
-}
+    return res.json({
+      result,
+      message: "User registered successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
 
-const login = async (req,res) =>{
+const login = async (req, res) => {
+  try {
     const data = await userlogin(req.body);
 
-    res.json({
-        message: "User logged in successfully",
-        data
-    })
-}
+    return res.json({
+      message: "User logged in successfully",
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
-    register,
-    login
-}
+  register,
+  login,
+};

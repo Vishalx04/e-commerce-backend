@@ -6,7 +6,7 @@ const getAllProducts = async () => {
     // console.log(products);
     return products;
   } catch (error) {
-    return error.message;
+    throw error;
   }
 };
 
@@ -18,7 +18,7 @@ const getOneProduct = async (productId) => {
 
     return product;
   } catch (error) {
-    return error.message;
+    throw error;
   }
 };
 module.exports = {
