@@ -57,6 +57,7 @@ const userlogin = async (userData) => {
       {
         userId: user.id,
         email: user.email,
+        role: user.role
       },
       process.env.JWT_SECRET_KEY,
       // {
