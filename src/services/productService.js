@@ -1,25 +1,26 @@
 const prisma = require("../config/prisma");
+const { NotFoundError } = require("../errors");
 
 const getAllProducts = async () => {
-  try {
+  
     const products = await prisma.product.findMany();
     // console.log(products);
     return products;
-  } catch (error) {
-    throw error;
-  }
+ 
 };
 
 const getOneProduct = async (productId) => {
-  try {
+ 
     const product = await prisma.product.findUnique({
       where: { id: productId },
     });
 
+    if(!product){
+      throw new NotFoundError("No product with the product id");
+    }
+
     return product;
-  } catch (error) {
-    throw error;
-  }
+ 
 };
 module.exports = {
   getAllProducts,

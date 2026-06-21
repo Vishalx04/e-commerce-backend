@@ -1,28 +1,18 @@
+const {  UnauthorizedError } = require("../errors");
 const extractToken = require("../utils/extractToken");
 const jwt = require("jsonwebtoken");
-const authMiddleware = (req,res,next) =>{
-    try {
-    const token = extractToken(req);
-    
-    if(!token){
-        return res.status(401).json({
-            success: false,
-            message : "Token Missing"
-        })
-    }
+const authMiddleware = (req, res, next) => {
+  const token = extractToken(req);
 
-    const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY);
+  if (!token) {
+    throw new UnauthorizedError("Authentication token is required");
+  }
 
-    req.user = decoded;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    next();
+  req.user = decoded;
 
-    } catch (error) {
-        return res.status(401).json({
-            success : false,
-            message : "Invalid token"
-        })
-    }
-}  
+  next();
+};
 
 module.exports = authMiddleware;
