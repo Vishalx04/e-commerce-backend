@@ -2,8 +2,7 @@ const { BadRequestError } = require("../errors");
 const { getAllProducts, getOneProduct } = require("../services/productService");
 
 const getProducts = async (req, res) => {
- 
-    const result = await getAllProducts();
+    const result = await getAllProducts(req.query);
     return res.status(200).json(result);
 
 };

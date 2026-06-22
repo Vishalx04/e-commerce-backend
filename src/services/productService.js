@@ -1,9 +1,13 @@
 const prisma = require("../config/prisma");
 const { NotFoundError } = require("../errors");
 
-const getAllProducts = async () => {
-  
-    const products = await prisma.product.findMany();
+const getAllProducts = async (queries) => {
+    var {categoryId} = queries;
+    categoryId = Number(categoryId);
+    const products = await prisma.product.findMany({
+      where :categoryId ? {categoryId} : {},
+      
+    });
     // console.log(products);
     return products;
  
