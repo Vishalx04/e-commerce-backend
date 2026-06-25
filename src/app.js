@@ -4,6 +4,7 @@ const productRoutes = require("./routes/productRoutes");
 const categoryRoutes = require("./routes/category.routes")
 const adminProductRoutes = require("./routes/adminRoutes/adminProductRoutes");
 const adminCategoryRoutes = require("./routes/adminRoutes/admin.category.routes");
+const wishlistRoutes = require("./routes/wishlist.routes")
 const authMiddleware = require("./middleware/authMiddleware");
 const errorHandler = require("./middleware/error.middleware");
 const authorize = require("./middleware/authorize");
@@ -13,7 +14,8 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products",productRoutes);
-app.use("/api/categories",categoryRoutes)
+app.use("/api/categories",categoryRoutes);
+app.use("/api/wishlist",wishlistRoutes)
 app.use("/api/admin/product",adminProductRoutes);
 app.use("/api/admin/category",adminCategoryRoutes);
 
