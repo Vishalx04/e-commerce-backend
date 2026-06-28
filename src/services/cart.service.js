@@ -1,5 +1,5 @@
 const prisma = require("../config/prisma");
-const { NotFoundError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../errors");
 
 const getCartService = async (req) => {
   const userId = req.user.id;
@@ -97,9 +97,104 @@ const addToCartService = async (req) => {
   };
 };
 
+const deleteFromCartService = async (req) => {
+  const productId = Number(req.params.productId);
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+  if (!product) {
+    throw new NotFoundError("Product not found");
+  }
 
+  const cart = await prisma.cart.findUnique({
+    where: {
+      userId: req.user.id,
+    },
+  });
+
+  if (!cart) {
+    throw new NotFoundError("Cart not found");
+  }
+
+  const cartItem = await prisma.cartItem.delete({
+    where: {
+      cartId_productId: {
+        cartId: cart.id,
+        productId,
+      },
+    },
+  });
+
+  return {
+    message: "Product removed from cart successfully",
+  };
+};
+
+const updateCartService = async (req) => {
+  const productId = Number(req.params.productId);
+  const quantity = req.body.quantity;
+
+  if (quantity < 0) {
+    throw new BadRequestError("Quantity must not be negative");
+  }
+
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  if (!product) {
+    throw new NotFoundError("Product not found");
+  }
+
+  const cart = await prisma.cart.findUnique({
+    where: {
+      userId: req.user.id,
+    },
+  });
+
+  if (!cart) {
+    throw new NotFoundError("Cart not found");
+  }
+
+  if (quantity > product.stock) {
+    throw new BadRequestError("Insufficient stock");
+  }
+
+  if (quantity === 0) {
+    await prisma.cartItem.delete({
+      where: {
+        cartId_productId: {
+          cartId: cart.id,
+          productId,
+        },
+      },
+    });
+  } else {
+    await prisma.cartItem.update({
+      where: {
+        cartId_productId: {
+          cartId: cart.id,
+          productId,
+        },
+      },
+      data: {
+        quantity,
+      },
+    });
+  }
+
+  return {
+    message: "Product updated successfully",
+  };
+};
 
 module.exports = {
   getCartService,
   addToCartService,
+  deleteFromCartService,
+  updateCartService,
 };
