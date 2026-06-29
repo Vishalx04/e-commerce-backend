@@ -11,6 +11,12 @@ enum Role {
   ADMIN
 }
 
+enum AddressType {
+  HOME
+  WORK
+  OTHER
+}
+
 model User {
   id        Int       @id @default(autoincrement())
   name      String
@@ -19,6 +25,7 @@ model User {
   role      Role      @default(USER)
   wishlist  Wishlist?
   cart      Cart?
+  Addresses Address[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
 }
@@ -69,4 +76,19 @@ model CartItem {
   quantity  Int     @default(1)
 
   @@unique([cartId, productId])
+}
+
+model Address {
+  id           Int         @id @default(autoincrement())
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  postalCode   String
+  addressType  AddressType @default(HOME)
+  isDefault    Boolean     @default(false)
+  userId       Int
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }

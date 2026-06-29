@@ -48,6 +48,10 @@ const addToCartService = async (req) => {
     throw new NotFoundError("Product not found");
   }
 
+  if(product.stock===0){
+    throw new BadRequestError("Product is out of stock");
+  }
+
   let cart = await prisma.cart.findUnique({
     where: {
       userId,
@@ -70,8 +74,10 @@ const addToCartService = async (req) => {
       },
     },
   });
-
-  if (!cartItem) {
+  if(cartItem && cartItem.quantity>=product.stock){
+    throw new BadRequestError("Cannot add more items. Stock limit reached");
+  }
+  if (!cartItem ) {
     await prisma.cartItem.create({
       data: {
         cartId: cart.id,

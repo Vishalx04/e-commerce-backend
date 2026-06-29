@@ -6,6 +6,7 @@ const adminProductRoutes = require("./routes/adminRoutes/adminProductRoutes");
 const adminCategoryRoutes = require("./routes/adminRoutes/admin.category.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
 const cartRoutes = require("./routes/cart.routes");
+const locationRoutes = require("./routes/location.routes");
 const authMiddleware = require("./middleware/authMiddleware");
 const errorHandler = require("./middleware/error.middleware");
 const authorize = require("./middleware/authorize");
@@ -13,15 +14,22 @@ const app = express();
 
 app.use(express.json());
 
+//general
 app.use("/api/auth", authRoutes);
 app.use("/api/products",productRoutes);
 app.use("/api/categories",categoryRoutes);
+
+//authenticated
 app.use("/api/wishlist",wishlistRoutes);
 app.use("/api/cart",cartRoutes);
+
+//admin
 app.use("/api/admin/product",adminProductRoutes);
 app.use("/api/admin/category",adminCategoryRoutes);
 
 
+//others
+app.use("/api/locations",locationRoutes)
 
 app.use("/test",authMiddleware,authorize("ADMIN"),(req,res)=>{
     return res.json(req.user);
